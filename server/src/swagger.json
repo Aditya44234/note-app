@@ -1,0 +1,201 @@
+  
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Notes-v1 API",
+    "version": "1.0.0",
+    "description": "Backend API for Notes-v1 App: user registration/login, note CRUD, and admin-only endpoints."
+  },
+  "servers": [
+    { "url": "http://localhost:3000" }
+  ],
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Register" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User registered" },
+          "400": { "description": "Email already exists" }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Login with email and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Login" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Success / Returns JWT" },
+          "400": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/api/v1/notes": {
+      "post": {
+        "summary": "Create a new note (user only)",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Note" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Note created" }
+        }
+      },
+      "get": {
+        "summary": "Get all notes (user sees own, admin sees all)",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": { "description": "Notes fetched" }
+        }
+      }
+    },
+    "/api/v1/notes/{id}": {
+      "get": {
+        "summary": "Get a note by ID (owner or admin)",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Note fetched" },
+          "404": { "description": "Note not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a note by ID",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Note" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Note updated" },
+          "404": { "description": "Note not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a note by ID (owner only)",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Note deleted" },
+          "404": { "description": "Note not found" }
+        }
+      }
+    },
+    "/api/v1/notes/admin/{id}": {
+      "delete": {
+        "summary": "Delete any note by ID (admin only)",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Note deleted by admin" },
+          "404": { "description": "Note not found" }
+        }
+      }
+    },
+    "/api/v1/users/profile": {
+      "get": {
+        "summary": "Get the logged-in user's profile",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": { "description": "User profile fetched" }
+        }
+      },
+      "put": {
+        "summary": "Update profile info",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Profile" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "Profile updated" }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "List all users (admin only)",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": { "description": "Users fetched" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "Register": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Aditya Joshi" },
+          "email": { "type": "string", "example": "aditya@example.com" },
+          "password": { "type": "string", "example": "secretpw" }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "example": "aditya@example.com" },
+          "password": { "type": "string", "example": "secretpw" }
+        },
+        "required": ["email", "password"]
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "example": "Ideas for UI" },
+          "content": { "type": "string", "example": "Use Tailwind for styling..." }
+        },
+        "required": ["title", "content"]
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Aditya Joshi" },
+          "email": { "type": "string", "example": "aditya@example.com" }
+        }
+      }
+    }
+  }
+}

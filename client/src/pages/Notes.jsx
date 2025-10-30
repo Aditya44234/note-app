@@ -78,11 +78,21 @@ export default function Notes() {
     navigate("/login");
   };
 
+  const goToProfile=()=>{
+    navigate('/profile')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-2 flex flex-col items-center">
       <div className="w-full max-w-xl mt-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-700">Your Notes</h2>
+           <button
+              className="text-sm bg-blue-200 text-blue-800 px-3 py-1 rounded hover:bg-blue-300"
+              onClick={goToProfile}
+            >
+              Profile
+            </button>
           <button
             className="text-sm bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
             onClick={handleLogout}

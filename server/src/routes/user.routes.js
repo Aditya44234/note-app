@@ -6,7 +6,7 @@ const router = express.Router();
 
 //  Get profile (Protected route) 
 router.get('/profile', authMiddleware, userController.getProfile);
-router.get('/profile', authMiddleware, userController.updateProfile);
+router.put('/profile', authMiddleware, userController.updateProfile);
 
 // Admin only :LIST ALL USERS
 router.get('/', authMiddleware, roleMiddleware('admin'), userController.getAllUsers)

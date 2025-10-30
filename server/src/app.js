@@ -14,7 +14,7 @@ const app = express();
 
 app.use(cors({
   origin: "http://localhost:5173", // Frontend origin
-  credentials: true                
+  credentials: true
 }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());

@@ -1,4 +1,4 @@
-#  server — Notes API Backend
+#   SERVER — Notes API Backend
 
 A production-ready backend for a Notes app, built using Node.js, Express, MongoDB, and JWT authentication. Features full CRUD for notes, user roles (user/admin), validation, and robust documentation via Swagger and a Postman collection.
 

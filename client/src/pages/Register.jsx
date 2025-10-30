@@ -1,7 +1,7 @@
-// src/pages/Register.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register } from "../services/api";
+import { UserIcon, MailIcon, LockIcon } from "lucide-react"; // Lucide icons
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -21,14 +21,11 @@ export default function Register() {
     setLoading(true);
     setError("");
     setSuccess("");
-    console.log(form)
     try {
-
       await register(form);
       setSuccess("Registration successful! Please login.");
       setTimeout(() => navigate("/login"), 1400);
     } catch (err) {
-      console.log(err)
       setError(
         err.response?.data?.message ||
           err.response?.data?.errors?.[0]?.msg ||
@@ -40,57 +37,66 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-purple-100 to-blue-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-purple-100 to-blue-100 px-4">
       <form
-        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm"
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-700">
           Register for Notes App
         </h2>
         {error && (
-          <div className="mb-3 text-red-600 bg-red-100 p-2 rounded text-sm text-center">
+          <div className="mb-4 bg-red-100 text-red-600 p-3 rounded text-sm text-center">
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-3 text-green-700 bg-green-100 p-2 rounded text-sm text-center">
+          <div className="mb-4 bg-green-100 text-green-700 p-3 rounded text-sm text-center">
             {success}
           </div>
         )}
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          autoComplete="name"
-          className="mb-4 w-full px-3 py-2 border rounded outline-none focus:ring-2 focus:ring-blue-300"
-          value={form.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          autoComplete="username"
-          className="mb-4 w-full px-3 py-2 border rounded outline-none focus:ring-2 focus:ring-blue-300"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          autoComplete="new-password"
-          className="mb-4 w-full px-3 py-2 border rounded outline-none focus:ring-2 focus:ring-blue-300"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+        <div className="relative mb-4">
+          <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            autoComplete="name"
+            className="w-full px-10 py-3 border rounded outline-none focus:ring-2 focus:ring-blue-300"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="relative mb-4">
+          <MailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            autoComplete="username"
+            className="w-full px-10 py-3 border rounded outline-none focus:ring-2 focus:ring-blue-300"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="relative mb-4">
+          <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            autoComplete="new-password"
+            className="w-full px-10 py-3 border rounded outline-none focus:ring-2 focus:ring-blue-300"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
           disabled={loading}
         >
           {loading ? "Registering..." : "Register"}

@@ -1,4 +1,3 @@
-// src/pages/Notes.jsx
 import { useEffect, useState } from "react";
 import { getNotes, addNote, updateNote, deleteNote } from "../services/api";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,6 @@ export default function Notes() {
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
 
-  // Fetch notes on mount
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -21,7 +19,6 @@ export default function Notes() {
       const res = await getNotes();
       setNotes(res.data.notes || []);
     } catch (err) {
-      // If token invalid, log out
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
         navigate("/login");
@@ -29,12 +26,12 @@ export default function Notes() {
     }
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setMsg("");
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -54,13 +51,13 @@ export default function Notes() {
     setLoading(false);
   };
 
-  const handleEdit = note => {
+  const handleEdit = (note) => {
     setForm({ title: note.title, content: note.content });
     setEditId(note._id);
     setMsg("");
   };
 
-  const handleDelete = async id => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Delete this note?")) return;
     setLoading(true);
     try {
@@ -78,34 +75,34 @@ export default function Notes() {
     navigate("/login");
   };
 
-  const goToProfile=()=>{
-    navigate('/profile')
-  }
+  const goToProfile = () => {
+    navigate("/profile");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 flex flex-col items-center">
-      <div className="w-full max-w-xl mt-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">Your Notes</h2>
-           <button
-              className="text-sm bg-blue-200 text-blue-800 px-3 py-1 rounded hover:bg-blue-300"
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 p-6 flex flex-col items-center">
+      <div className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-700">Your Notes</h2>
+          <div className="space-x-3">
+            <button
               onClick={goToProfile}
+              className="px-4 py-2 bg-blue-200 text-blue-800 rounded hover:bg-blue-300 font-semibold transition"
             >
               Profile
             </button>
-          <button
-            className="text-sm bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition text-gray-700 font-semibold"
+            >
+              Logout
+            </button>
+          </div>
         </div>
-        <form
-          className="bg-white p-4 rounded shadow mb-6"
-          onSubmit={handleSubmit}
-        >
+
+        <form className="mb-8" onSubmit={handleSubmit}>
           {msg && (
-            <div className="mb-3 text-blue-700 bg-blue-50 p-2 rounded text-sm text-center">
+            <div className="mb-4 text-center text-blue-700 bg-blue-50 p-3 rounded text-sm font-medium">
               {msg}
             </div>
           )}
@@ -113,57 +110,71 @@ export default function Notes() {
             type="text"
             name="title"
             placeholder="Title"
-            className="mb-2 w-full px-3 py-2 border rounded"
             value={form.title}
             onChange={handleChange}
+            className="mb-4 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
           <textarea
             name="content"
+            rows={4}
             placeholder="Content"
-            className="mb-2 w-full px-3 py-2 border rounded"
             value={form.content}
             onChange={handleChange}
+            className="mb-4 w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
-            rows={3}
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition mt-1"
             disabled={loading}
+            className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? (editId ? "Saving..." : "Adding...") : editId ? "Update Note" : "Add Note"}
+            {loading
+              ? editId
+                ? "Saving..."
+                : "Adding..."
+              : editId
+              ? "Update Note"
+              : "Add Note"}
           </button>
         </form>
-        <div className="space-y-4">
-          {notes.length === 0 && (
-            <div className="text-gray-400 text-center py-8">No notes found.</div>
+
+        <div className="space-y-5">
+          {notes.length === 0 ? (
+            <p className="text-center text-gray-400 py-10 text-lg">
+              No notes found.
+            </p>
+          ) : (
+            notes.map((note) => (
+              <div
+                key={note._id}
+                className="bg-white rounded-lg shadow p-5 sm:flex sm:items-center justify-between space-y-3 sm:space-y-0"
+              >
+                <div className="flex-1 overflow-hidden">
+                  <h3 className="font-semibold text-xl text-gray-800 truncate">
+                    {note.title}
+                  </h3>
+                  <p className="text-gray-600 mt-1 whitespace-pre-wrap">
+                    {note.content}
+                  </p>
+                </div>
+                <div className="flex space-x-3 mt-4 sm:mt-0 sm:ml-6">
+                  <button
+                    onClick={() => handleEdit(note)}
+                    className="px-3 py-1 rounded bg-yellow-100 text-yellow-800 hover:bg-yellow-200 text-xs font-semibold transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(note._id)}
+                    className="px-3 py-1 rounded bg-red-100 text-red-800 hover:bg-red-200 text-xs font-semibold transition"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
           )}
-          {notes.map(note => (
-            <div
-              key={note._id}
-              className="bg-white rounded shadow p-4 flex flex-col sm:flex-row sm:items-center justify-between"
-            >
-              <div className="flex-1">
-                <div className="font-semibold text-lg text-gray-800 truncate">{note.title}</div>
-                <div className="text-gray-500 break-words">{note.content}</div>
-              </div>
-              <div className="flex space-x-2 mt-2 sm:mt-0 sm:ml-4">
-                <button
-                  className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded hover:bg-yellow-200"
-                  onClick={() => handleEdit(note)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200"
-                  onClick={() => handleDelete(note._id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>

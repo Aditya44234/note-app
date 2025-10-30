@@ -1,7 +1,7 @@
-// src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../services/api"
+import { login } from "../services/api";
+import { UserIcon, LockIcon } from 'lucide-react'; // Import Lucide icons
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -20,8 +20,8 @@ export default function Login() {
     setError("");
     try {
       const res = await login(form);
-      localStorage.setItem("token", res.data.token); // Store JWT
-      navigate("/notes"); // Go to notes dashboard
+      localStorage.setItem("token", res.data.token);
+      navigate("/notes");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Try again.");
     } finally {
@@ -30,42 +30,46 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 to-purple-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 to-purple-100 px-4">
       <form
-        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm"
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
         onSubmit={handleSubmit}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">
-          Login to Notes App
-        </h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-700">Login to Notes App</h2>
         {error && (
-          <div className="mb-3 text-red-600 bg-red-100 p-2 rounded text-sm text-center">
+          <div className="mb-4 bg-red-100 text-red-600 p-3 rounded text-sm text-center">
             {error}
           </div>
         )}
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          autoComplete="username"
-          className="mb-4 w-full px-3 py-2 border rounded outline-none focus:ring-2 focus:ring-blue-300"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          className="mb-4 w-full px-3 py-2 border rounded outline-none focus:ring-2 focus:ring-blue-300"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+        <div className="relative mb-4">
+          <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            autoComplete="username"
+            className="w-full px-10 py-3 border rounded outline-none focus:ring-2 focus:ring-blue-300"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="relative mb-4">
+          <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            autoComplete="current-password"
+            className="w-full px-10 py-3 border rounded outline-none focus:ring-2 focus:ring-blue-300"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}

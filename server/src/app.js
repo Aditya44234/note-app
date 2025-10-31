@@ -13,9 +13,13 @@ const noteRoutes = require('./routes/note.routes');
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173", // Frontend origin
+  origin: [
+    "http://localhost:5173",
+    "https://note-app-pi-swart.vercel.app/"
+  ],
   credentials: true
 }));
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());
 app.use(express.json());
